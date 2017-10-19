@@ -24,12 +24,12 @@ const autoOpenBrowser = !!config.dev.autoOpenBrowser
 const proxyTable = config.dev.proxyTable
 
 const app = express()
-var router = express.Router()
-var goodsData = require('../mock/goods.json')
-router.get('/goods', (req, res, next) => {
-  res.json(goodsData)
-})
-app.use(router)
+// var router = express.Router()
+// var goodsData = require('../mock/goods.json')
+// router.get('/goods', (req, res, next) => {
+//   res.json(goodsData)
+// })
+// app.use(router)
 
 const compiler = webpack(webpackConfig)
 
