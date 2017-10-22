@@ -35,6 +35,12 @@ module.exports = {
       '/goods': {
         // 转发到3000端口解决axios无法跨域的问题，实际访问了http://localhhost:3000/goods
         target: 'http://127.0.0.1:3000'
+      },
+      '/goods/*': {
+        target: 'http://127.0.0.1:3000'
+      },
+      '/users/*': {
+        target: 'http://127.0.0.1:3000'
       }
     },
     // CSS Sourcemaps off by default because relative paths are "buggy"

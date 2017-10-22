@@ -28,9 +28,9 @@
       </div>
       <div class="navbar-right-container" style="display:flex;margin:20px">
         <div class="navbar-menu-container" style="display:flex;align-items:center">
-          <span class="navbar-link" v-text="nickName" v-if="nickName"></span>
+          <span class="navbar-link" v-text="nickName" v-if="nickName" style="margin-right:20px"></span>
           <a href="#" class="navbar-link" @click="loginModalFlag=true" v-if="!nickName" style="margin-right:20px">Login</a>
-          <a href="#" class="navbar-link" @click="logOut"  style="margin-right:20px" v-else>Logout</a>
+          <a href="#" class="navbar-link" @click="logOut" v-if="nickName" style="margin-right:20px">Log out</a>
           <div class="navbar-cart-container">
             <span class="navbar-cart-count" v-text="cartCount"></span>
             <a class="navbar-link navbar-cart-link" href="/#/cart">
@@ -75,23 +75,58 @@
 </template>
 
 <script>
+import './../assets/css/login.css'
+import axios from 'axios'
+
 export default {
   data () {
     return {
-      nickName: true,
+      nickName: '',
       cartCount: 8,
       loginModalFlag: false,
-      errorTip: true,
-      userName: 'kpl',
-      userPwd: '123'
+      errorTip: false,
+      userName: '',
+      userPwd: ''
     }
   },
+  mounted () {
+    this.checkLogin()
+  },
   methods: {
+    checkLogin () {
+      axios.get('/users/checkLogin').then((response) => {
+        let res = response.data
+        if (res.status === '0') {
+          this.nickName = res.result
+        }
+      })
+    },
     logOut () {
-      console.log('1')
+      axios.post('/users/logout').then((response) => {
+        let res = response.data
+        if (res.status === '0') {
+          this.nickName = ''
+        }
+      })
     },
     login () {
-      console.log('1')
+      if (!this.userName || !this.userPwd) {
+        this.errorTip = true
+        return
+      }
+      axios.post('/users/login', {
+        userName: this.userName,
+        userPwd: this.userPwd
+      }).then((response) => {
+        let res = response.data
+        if (res.status === '0') {
+          this.loginModalFlag = false
+          this.errorTip = false
+          this.nickName = res.result.userName
+        } else {
+          this.errorTip = true
+        }
+      })
     }
   }
 }
