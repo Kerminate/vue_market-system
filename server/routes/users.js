@@ -123,4 +123,65 @@ router.post('/cartDel', (req, res, next) => {
   })
 })
 
+// 修改商品数量
+router.post('/cartEdit', (req, res, next) => {
+  var userId = req.cookies.userId
+  var productId = req.body.productId
+  var productNum = req.body.productNum
+  var checked = req.body.checked
+  User.update({'userId': userId, 'cartList.productId': productId}, {
+    'cartList.$.productNum': productNum,
+    'cartList.$.checked': checked
+  }, (err, doc) => {
+    if (err) {
+      res.json({
+        status: '1',
+        msg: err.message,
+        result: ''
+      })
+    } else {
+      res.json({
+        status: '0',
+        msg: '',
+        result: 'suc'
+      })
+    }
+  })
+})
+
+router.post('/editCheckAll', (req, res, next) => {
+  var userId = req.cookies.userId
+  var checkAll = req.body.checkAll ? '1' : '0'
+  User.findOne({userId: userId}, (err, user) => {
+    if (err) {
+      res.json({
+        status: '1',
+        msg: err.message,
+        result: ''
+      })
+    } else {
+      if (user) {
+        user.cartList.forEach((item) => {
+          item.checked = checkAll
+        })
+        user.save((err1, doc) => {
+          if (err1) {
+            res.json({
+              status: '1',
+              msg: err1.message,
+              result: ''
+            })
+          } else {
+            res.json({
+              status: '0',
+              msg: '',
+              result: 'suc'
+            })
+          }
+        })
+      }
+    }
+  })
+})
+
 module.exports = router

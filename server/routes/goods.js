@@ -77,7 +77,7 @@ router.get('/list', (req, res, next) => {
 
 // 加入购物车
 router.post('/addCart', (req, res, next) => {
-  var userId = '100000077'
+  var userId = req.cookies.userId
   var productId = req.body.productId
   var User = require('../models/user')
 
