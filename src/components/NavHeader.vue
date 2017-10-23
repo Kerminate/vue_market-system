@@ -23,7 +23,7 @@
     <div class="navbar" style="display:flex;justify-content:space-between">
       <div class="navbar-left-container">
         <a href="/">
-          <img class="navbar-brand-logo" src="/static/logo.png">
+          <img class="navbar-brand-logo" src="/static/logo2.png" width="200" height="60" style="margin:10px 20px">
         </a>
       </div>
       <div class="navbar-right-container" style="display:flex;margin:20px">
@@ -32,7 +32,7 @@
           <a href="#" class="navbar-link" @click="loginModalFlag=true" v-if="!nickName" style="margin-right:20px">Login</a>
           <a href="#" class="navbar-link" @click="logOut" v-if="nickName" style="margin-right:20px">Log out</a>
           <div class="navbar-cart-container">
-            <span class="navbar-cart-count" v-text="cartCount"></span>
+            <!-- <span class="navbar-cart-count" v-text="cartCount"></span> -->
             <a class="navbar-link navbar-cart-link" href="/#/cart">
               <svg class="navbar-cart-logo" width="30" height="30">
                 <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-cart"></use>
