@@ -60,14 +60,14 @@
           <div class="addr-list-wrap">
             <div class="addr-list">
               <ul>
-                <li v-for="(item, index) in addressListFilter" :class="{'check': checkIndex === index}" @click="checkIndex = index">
+                <li v-for="(item, index) in addressListFilter" :class="{'check': checkIndex === index}" @click="checkIndex = index; selectedAddrId = item.addressId">
                   <dl>
                     <dt>{{item.userName}}</dt>
                     <dd class="address">{{item.streetName}}</dd>
                     <dd class="tel">{{item.tel}}</dd>
                   </dl>
                   <div class="addr-opration addr-del">
-                    <a href="javascript:;" class="addr-del-btn">
+                    <a href="javascript:;" class="addr-del-btn" @click="delAddressConfirm(item.addressId)">
                       <svg class="icon icon-del"><use xlink:href="#icon-del"></use></svg>
                     </a>
                   </div>
@@ -119,11 +119,20 @@
             </div>
           </div>
           <div class="next-btn-wrap">
-            <a class="btn btn--m btn--red">Next</a>
+            <router-link class="btn btn--m btn--red" :to="{ path: '/orderConfirm', query: {addressId: selectedAddrId} }">Next</router-link>
           </div>
         </div>
       </div>
     </div>
+    <modal :mdShow="isMdShow" @close="closeModal">
+      <p slot="message">
+        您是否确认要删除此地址
+      </p>
+      <div slot="btnGroup">
+        <a class="btn btn--m" @click="delAddress">确认</a>
+        <a class="btn btn--m" @click="isMdShow = false">取消</a>
+      </div>
+    </modal>
     <nav-footer></nav-footer>
   </div>
 </template>
@@ -141,7 +150,10 @@
       return {
         limit: 3,
         addressList: [],
-        checkIndex: 0
+        checkIndex: 0,
+        isMdShow: false,
+        addressId: '',
+        selectedAddrId: ''
       }
     },
     mounted () {
@@ -179,6 +191,25 @@
           let res = response.data
           if (res.status === '0') {
             // console.log('set default')
+            this.init()
+          }
+        })
+      },
+      closeModal () {
+        this.isMdShow = false
+      },
+      delAddressConfirm (addressId) {
+        this.isMdShow = true
+        this.addressId = addressId
+      },
+      delAddress () {
+        this.isMdShow = true
+        axios.post('/users/delAddress', {
+          addressId: this.addressId
+        }).then((response) => {
+          let res = response.data
+          if (res.status === '0') {
+            this.isMdShow = false
             this.init()
           }
         })
