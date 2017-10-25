@@ -32,12 +32,12 @@
           <a href="#" class="navbar-link" @click="loginModalFlag=true" v-if="!nickName" style="margin-right:20px">Login</a>
           <a href="#" class="navbar-link" @click="logOut" v-if="nickName" style="margin-right:20px">Log out</a>
           <div class="navbar-cart-container">
-            <!-- <span class="navbar-cart-count" v-text="cartCount"></span> -->
             <a class="navbar-link navbar-cart-link" href="/#/cart">
               <svg class="navbar-cart-logo" width="30" height="30">
                 <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-cart"></use>
               </svg>
             </a>
+            <span class="navbar-cart-count" v-if="cartCount">{{cartCount}}</span>
           </div>
         </div>
       </div>
@@ -77,12 +77,11 @@
 <script>
 import './../assets/css/login.css'
 import axios from 'axios'
+import {mapState} from 'vuex'
 
 export default {
   data () {
     return {
-      nickName: '',
-      cartCount: 8,
       loginModalFlag: false,
       errorTip: false,
       userName: '',
@@ -92,12 +91,23 @@ export default {
   mounted () {
     this.checkLogin()
   },
+  computed: {
+    ...mapState(['nickName', 'cartCount'])
+    // nickName () {
+    //   return this.$store.state.nickName
+    // },
+    // cartCount () {
+    //   return this.$store.state.cartCount
+    // }
+  },
   methods: {
     checkLogin () {
       axios.get('/users/checkLogin').then((response) => {
         let res = response.data
         if (res.status === '0') {
-          this.nickName = res.result
+          // this.nickName = res.result
+          this.$store.commit('updateUserInfo', res.result)
+          this.getCartCount()
         }
       })
     },
@@ -105,7 +115,7 @@ export default {
       axios.post('/users/logout').then((response) => {
         let res = response.data
         if (res.status === '0') {
-          this.nickName = ''
+          this.$store.commit('updateUserInfo', '')
         }
       })
     },
@@ -122,9 +132,19 @@ export default {
         if (res.status === '0') {
           this.loginModalFlag = false
           this.errorTip = false
-          this.nickName = res.result.userName
+          // this.nickName = res.result.userName
+          this.$store.commit('updateUserInfo', res.result.userName)
+          this.getCartCount()
         } else {
           this.errorTip = true
+        }
+      })
+    },
+    getCartCount () {
+      axios.get('/users/getCartCount').then((response) => {
+        let res = response.data
+        if (res.status === '0') {
+          this.$store.commit('initCartCount', res.result)
         }
       })
     }
@@ -133,4 +153,13 @@ export default {
 </script>
 
 <style lang="css">
+  .navbar-cart-count {
+    vertical-align: top;
+    border-radius: 50%;
+    background-color: red;
+    color: #fff;
+    font-size: 10px;
+    padding: 2px;
+    margin-left: -7px;
+  }
 </style>

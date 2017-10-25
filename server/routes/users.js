@@ -73,6 +73,33 @@ router.get('/checkLogin', (req, res, next) => {
   }
 })
 
+// 计算购物车商品数量
+router.get('/getCartCount', (req, res, next) => {
+  if (req.cookies && req.cookies.userId) {
+    var userId = req.cookies.userId
+    User.findOne({userId: userId}, (err, doc) => {
+      if (err) {
+        res.json({
+          status: '1',
+          msg: err.message,
+          result: ''
+        })
+      } else {
+        var cartList = doc.cartList
+        let cartCount = 0
+        cartList.forEach((item) => {
+          cartCount += parseInt(item.productNum)
+        })
+        res.json({
+          status: '0',
+          msg: '',
+          result: cartCount
+        })
+      }
+    })
+  }
+})
+
 // 查询当前用户的购物车数据
 router.get('/cartList', (req, res, next) => {
   var userId = req.cookies.userId
