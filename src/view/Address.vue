@@ -133,6 +133,14 @@
         <a class="btn btn--m" @click="isMdShow = false">取消</a>
       </div>
     </modal>
+    <modal :mdShow="isMdShow2" @close="isMdShow2 = false">
+      <p slot="message">
+        地址列表至少需要一条数据，已无法继续删除
+      </p>
+      <div slot="btnGroup">
+        <a class="btn btn--m" @click="isMdShow2 = false">好的</a>
+      </div>
+    </modal>
     <nav-footer></nav-footer>
   </div>
 </template>
@@ -153,7 +161,8 @@
         checkIndex: 0,
         isMdShow: false,
         addressId: '',
-        selectedAddrId: ''
+        selectedAddrId: '',
+        isMdShow2: false
       }
     },
     mounted () {
@@ -199,8 +208,12 @@
         this.isMdShow = false
       },
       delAddressConfirm (addressId) {
-        this.isMdShow = true
-        this.addressId = addressId
+        if (this.addressList.length > 1) {
+          this.isMdShow = true
+          this.addressId = addressId
+        } else {
+          this.isMdShow2 = true
+        }
       },
       delAddress () {
         this.isMdShow = true
