@@ -18,7 +18,7 @@ module.exports = {
     assetsSubDirectory: 'static',
     // 发布路径，如果构建后的产品文件有用于发布CDN或者放到其他域名的服务器，可以在这里进行设置
     // 设置之后构建的产品文件在注入到index.html中的时候就会带上这里的发布路径
-    assetsPublicPath: '/',
+    assetsPublicPath: './', // 使build后的static已相对路径访问
     // 是否使用source-map
     productionSourceMap: true,
     // Gzip off by default as many popular static hosts such as
